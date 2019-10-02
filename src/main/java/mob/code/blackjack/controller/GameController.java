@@ -1,11 +1,10 @@
 package mob.code.blackjack.controller;
 
+import mob.code.blackjack.domain.GameDto;
 import mob.code.blackjack.domain.Game;
-import mob.code.blackjack.domain.GameCenter;
+import mob.code.blackjack.domain.GameResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import static java.util.Arrays.asList;
 
 @RestController
 @RequestMapping("/")
@@ -13,7 +12,7 @@ import static java.util.Arrays.asList;
 public class GameController {
 
     @Autowired
-    GameCenter gameCenter;
+    Game game;
 
     @GetMapping("ping")
     public String ping() {
@@ -26,8 +25,17 @@ public class GameController {
         return "BB";
     }
     @PostMapping("startgame")
-    public Game startGame(){
-        return gameCenter.startGame();
+    public GameDto startGame(){
+        return game.startGame();
     }
 
+    @PostMapping("closedeal")
+    public GameResult closeDeal() {
+        return game.closeDeal();
+    }
+
+    @PostMapping("deal")
+    public GameDto deal() {
+        return game.deal();
+    }
 }

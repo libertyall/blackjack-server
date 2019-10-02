@@ -1,27 +1,43 @@
 package mob.code.blackjack.domain;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 
+@Component
 public class Game {
-    public List<String> getHost() {
-        return host;
+
+    @Autowired
+    private Deck deck;
+    private GameDto gameDto;
+    @Autowired
+    private GameRule gameRule;
+
+    public GameDto startGame() {
+        gameDto = new GameDto();
+        deck.shuffle();
+        gameDto.getPlayer().add(deck.deal());
+        gameDto.getHost().add(deck.deal());
+        gameDto.getPlayer().add(deck.deal());
+        return gameDto;
     }
 
-    public void setHost(List<String> host) {
-        this.host = host;
+    public GameResult closeDeal() {
+
+        boolean isHostWin = gameRule.isHostWin(gameDto.getHost(), gameDto.getPlayer());
+
+        return new GameResult(){{
+            setHost(new Player(){{
+                setWinner(isHostWin);
+            }});
+            setPlayer(new Player(){{
+                setWinner(!isHostWin);
+            }});
+        }};
     }
 
-    public List<String> getPlayer() {
-        return player;
+    public GameDto deal() {
+        gameDto.getPlayer().add(deck.deal());
+        return gameDto;
     }
-
-    public void setPlayer(List<String> player) {
-        this.player = player;
-    }
-
-    private List<String> host = new ArrayList<>();
-    private List<String> player = new ArrayList<>();
-
 }
